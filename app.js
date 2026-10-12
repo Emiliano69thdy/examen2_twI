@@ -60,7 +60,7 @@ const mostrarSeries = (series) => {
         const año = serie.first_air_date ? serie.first_air_date.substring(0, 4) : 'Sin año';
         const imagen = serie.poster_path ? `${IMAGE_URL}${serie.poster_path}` : '';
         seriesGrid.innerHTML += `
-            <div class="serie-card">
+            <div class="serie-card" data-id="${serie.id}">
                 <img class="serie-card__image" src="${imagen}" alt="${serie.name}">
                 <div class="serie-card__content">
                     <h3 class="serie-card__title">${serie.name}</h3>
@@ -120,6 +120,24 @@ retryBtn.addEventListener('click', () => {
         cargarSeriesPopulares();
     } else {
         buscarSeries();
+    }
+});
+
+const abrirModal = async (id) => {
+    modal.style.display = 'flex';
+    modalBody.innerHTML = '<p>Cargando detalles...</p>';
+    const respuesta = await fetch(`${BASE_URL}/tv/${id}?api_key=${API_KEY}&language=es-ES`);
+    const serie = await respuesta.json();
+    modalBody.innerHTML = `
+        <h2>${serie.name}</h2>
+        <p>${serie.overview}</p>
+    `;
+};
+
+seriesGrid.addEventListener('click', (e) => {
+    const tarjeta = e.target.closest('.serie-card');
+    if (tarjeta) {
+        abrirModal(tarjeta.dataset.id);
     }
 });
 
