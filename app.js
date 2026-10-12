@@ -1,7 +1,5 @@
 
 const API_KEY = 'b28916e00c0215950498ee7ea6714b48';
-
-
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -89,8 +87,40 @@ const cargarSeriesPopulares = async () => {
     }
 };
 
-retryBtn.addEventListener('click', () => {
+const buscarSeries = async () => {
+    const texto = searchInput.value.trim();
+    if (texto === '') {
+        cargarSeriesPopulares();
+        return;
+    }
+    mostrarLoading();
+    try {
+        const respuesta = await fetch(`${BASE_URL}/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(texto)}&language=es-ES`);
+        if (!respuesta.ok) throw new Error();
+        const datos = await respuesta.json();
+        mostrarSeries(datos.results);
+        resultsTitle.textContent = `Resultados para: ${texto}`;
+        ocultarLoading();
+    } catch (error) {
+        mostrarError('No se pudieron buscar las series. Intenta de nuevo.');
+    }
+};
+
+searchInput.addEventListener('input', () => {
+    buscarSeries();
+});
+
+clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
     cargarSeriesPopulares();
+});
+
+retryBtn.addEventListener('click', () => {
+    if (searchInput.value.trim() === '') {
+        cargarSeriesPopulares();
+    } else {
+        buscarSeries();
+    }
 });
 
 cargarSeriesPopulares();
