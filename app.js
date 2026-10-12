@@ -1,4 +1,4 @@
-
+//Douglas Emiliano Rioja Martinez 
 const API_KEY = 'b28916e00c0215950498ee7ea6714b48';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
